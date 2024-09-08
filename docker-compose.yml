@@ -1,0 +1,44 @@
+services:
+  backend:
+    image: todo_list_backend_image
+    pull_policy: never
+    container_name: todo_list_backend_container
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: runner
+    ports:
+      - 8000:8000
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mongodb
+
+  frontend:
+    image: todo_list_frontend_image
+    pull_policy: never
+    container_name: todo_list_frontend_container
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+
+  mongodb:
+    image: mongo:7.0.12
+    container_name: todo_list_mongodb_container
+    volumes:
+      - mongodb-data:/data/db
+    env_file:
+      - ./mongodb/.env
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: todo_list_mongo-express_container
+    ports:
+      - 8081:8081
+    env_file:
+      - ./mongo-express/.env
+
+volumes:
+  mongodb-data: 
